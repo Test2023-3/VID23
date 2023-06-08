@@ -1,0 +1,14 @@
+streamlit
+protobuf==3.20.0
+altair==4.1.0
+torch
+whisper
+git+https://github.com/openai/whisper.git
+nltk
+firebase-admin
+scikit-learn
+pydub
+deep_translator
+gensim
+pyvis
+
