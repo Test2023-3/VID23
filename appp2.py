@@ -10,7 +10,7 @@ import firebase_admin
 from firebase_admin import credentials, storage
 import whisper
 import streamlit as st
-import bardapi
+import bardapi as bard_module
 
 nltk.download("punkt")
 from collections import defaultdict
@@ -71,12 +71,14 @@ def transcribe_audio(audio_file_path):
     transcript = result["text"]
     return transcript
 
+@contextlib.contextmanager
 def get_bard_answer(input_text):
-    bard = Bard(language="en")
+    bard = bard_module.Bard(language="en")
     response = bard.get_answer(input_text)
     content = response['content']
-    return content
-
+    yield content
+    del bard
+    
 def get_relevant_context(transcription, user_question):
     sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
     all_passages = sent_detector.tokenize(transcription)
@@ -300,11 +302,13 @@ if st.session_state.transcription:
     if col2.button("Regenerate Answer"):
         mark_button_action('regenerate_answer_clicked')
 
+
     if st.session_state.submit_question_clicked or st.session_state.regenerate_answer_clicked:
-        context = get_relevant_context(st.session_state.transcription, user_question)
-        answer = context.split(". ", 1)[1]  # Get the relevant context without the user question
-        st.session_state.bard_answer = answer
-        st.text_area("Answer", value=answer, height=150)
+    context = get_relevant_context(st.session_state.transcription, user_question)
+    answer = context.split(". ", 1)[1]
+    with get_bard_answer(context[:512]) as bard_answer:
+        st.session_state.bard_answer = bard_answer
+    st.text_area("Answer", value=answer, height=150)
 
     col3, col4 = st.columns([1, 1])
 
@@ -333,7 +337,8 @@ if st.session_state.transcription:
 
         if st.session_state.further_information_clicked or st.session_state.regenerate_further_information_clicked:
             context = "Generate further information about this: " + st.session_state.bard_answer
-            st.session_state.further_info = get_bard_answer(context[:512])  
+              with get_bard_answer(context[:512]) as bard_answer:
+            st.session_state.further_info = bard_answer
             st.text_area("Further Information", value=st.session_state.further_info, height=150)
 
         col7, col8 = st.columns([1, 1])
