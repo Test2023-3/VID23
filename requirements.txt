@@ -1,6 +1,7 @@
 streamlit
 protobuf==3.20.0
 altair==4.1.0
+bardapi
 torch
 whisper
 git+https://github.com/openai/whisper.git
