@@ -28,16 +28,6 @@ import deep_translator
 from deep_translator import GoogleTranslator
 
 nltk.download('averaged_perceptron_tagger')
-
-# Import additional modules for concept map
-import gensim
-import gensim.corpora as corpora
-from gensim.utils import simple_preprocess
-from gensim.models import CoherenceModel
-from nltk.corpus import stopwords
-import networkx as nx
-from pyvis.network import Network
-
 nltk.download('stopwords')
 
 
@@ -46,8 +36,6 @@ def mark_button_action(b_key: str):
 
 # Add your Bard token here
 os.environ['_BARD_API_KEY'] = "Wwj86guYc9unyPQDkyNlWsR7IGBlXKAc-Gk7s7RfVb9YrEVptkKXYG7Ykg-OcLCYnxtIVA."
-
-
 
 
 if not firebase_admin._apps:
@@ -78,7 +66,7 @@ def get_bard_answer(input_text):
     content = response['content']
     yield content
     del bard
-    
+
 def get_relevant_context(transcription, user_question):
     sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
     all_passages = sent_detector.tokenize(transcription)
@@ -86,10 +74,10 @@ def get_relevant_context(transcription, user_question):
     # Calculate TF-IDF
     vectorizer = TfidfVectorizer()
     tfidf_matrix = vectorizer.fit_transform([user_question] + all_passages)
-    
+
     # Calculate cosine similarity
     cosine_similarities = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:]).flatten()
-    
+
     # Get indices of the top 2 most relevant sentences
     top_indices = cosine_similarities.argsort()[:-3:-1]
     relevant_passages = [all_passages[i] for i in top_indices]
@@ -208,7 +196,7 @@ if 'downloaded_video' not in st.session_state:
 if st.button("Submit to download video"):
     video_blob = bucket.get_blob(f"mp3_files/{video_name}.mp4")
 
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as tf:
+    with tempfile.NamedTemporaryFile(=False, suffix=".mp4") as tf:
         video_filepath = tf.name
         video_blob.download_to_filename(video_filepath)
         st.session_state.downloaded_video = video_filepath
@@ -244,8 +232,9 @@ def extract_key_concepts(text, n=5):
 
     most_frequent_words = heapq.nlargest(n, word_frequencies, key=word_frequencies.get)
     concepts = {word: random.uniform(0.3, 1) for word in most_frequent_words}
-    
+
     return concepts
+
 transcription = st.session_state.transcription
 concepts = extract_key_concepts(transcription)
 
@@ -274,9 +263,6 @@ if st.session_state.translate_transcription_arabic_clicked:
     st.session_state.translation_transcription = translate_text(transcription)
     st.markdown(f"<div class='arabic-text'><label>Transcription in Arabic</label><br><textarea style='width: 100%; height: 150px;'>{st.session_state.translation_transcription}</textarea></div>", unsafe_allow_html=True)
 
-
-def mark_button_action(b_key: str):
-    st.session_state[b_key] = not st.session_state[b_key]
 if 'bard_answer' not in st.session_state:
     st.session_state.bard_answer = ""
 # Initialize Arabic translations of Engage and Reinforcement
@@ -302,8 +288,7 @@ if st.session_state.transcription:
     if col2.button("Regenerate Answer"):
         mark_button_action('regenerate_answer_clicked')
 
-
-    if st.session_state.submit_question_clicked or st.session_state.regenerate_answer_clicked:
+if st.session_state.submit_question_clicked or st.session_state.regenerate_answer_clicked:
     context = get_relevant_context(st.session_state.transcription, user_question)
     answer = context.split(". ", 1)[1]
     with get_bard_answer(context[:512]) as bard_answer:
@@ -337,8 +322,8 @@ if st.session_state.transcription:
 
         if st.session_state.further_information_clicked or st.session_state.regenerate_further_information_clicked:
             context = "Generate further information about this: " + st.session_state.bard_answer
-              with get_bard_answer(context[:512]) as bard_answer:
-            st.session_state.further_info = bard_answer
+            with get_bard_answer(context[:512]) as bard_answer:
+                st.session_state.further_info = bard_answer
             st.text_area("Further Information", value=st.session_state.further_info, height=150)
 
         col7, col8 = st.columns([1, 1])
