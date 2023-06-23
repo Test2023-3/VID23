@@ -58,7 +58,7 @@ def extract_audio(video_filepath, audio_filepath):
     video.export(audio_filepath, format="mp3")
 
 def transcribe_audio(audio_file_path):
-    model = whisper.load_model("large")
+    model = whisper.load_model("small")
     result = model.transcribe(audio_file_path)
     transcript = result["text"]
     return transcript
