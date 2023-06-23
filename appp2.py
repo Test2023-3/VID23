@@ -43,7 +43,7 @@ def mark_button_action(b_key: str):
 # Add your Bard token here
 os.environ['_BARD_API_KEY'] = "Wwj86guYc9unyPQDkyNlWsR7IGBlXKAc-Gk7s7RfVb9YrEVptkKXYG7Ykg-OcLCYnxtIVA."
 
-if not firebase_admin._get_apps():
+if not firebase_admin._apps:
     cred = credentials.Certificate("firebase.json")
     firebase_app = firebase_admin.initialize_app(cred, {
         "storageBucket": "chatgpt-28e16.appspot.com",
