@@ -155,6 +155,14 @@ def generate_concept_map(text):
     pyvis_graph.save_graph("output/concept_map.html")
     return "output/concept_map.html"
 
+def initialize_button_states():
+    # Initialize Session State Attributes if required
+    if not st.session_state.get('submit_question_clicked'):
+        st.session_state.submit_question_clicked = False
+
+    if not st.session_state.get('regenerate_answer_clicked'):
+        st.session_state.regenerate_answer_clicked = False
+
 
 st.markdown("<h2 style='text-align: center; color: white; background-color: darkgreen;'>Educational Video Assistant</h2>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: black; background-color: lightgray;'>This AI Video Assistant will help you get answers to your questions on educational videos</p>",
@@ -283,12 +291,14 @@ if st.session_state.transcription:
     col1, col2 = st.columns([1, 1])
 
     if not st.session_state.get('submit_question_clicked'): st.session_state.submit_question_clicked = False
-    if col1.button("Submit Question"):
-        mark_button_action('submit_question_clicked')
+    # Call initialize_button_states before using the attributes
+initialize_button_states()
 
-    if not st.session_state.get('regenerate_answer_clicked'): st.session_state.regenerate_answer_clicked = False
-    if col2.button("Regenerate Answer"):
-        mark_button_action('regenerate_answer_clicked')
+if col1.button("Submit Question"):
+    mark_button_action('submit_question_clicked')
+
+if col2.button("Regenerate Answer"):
+    mark_button_action('regenerate_answer_clicked')
 
 if st.session_state.submit_question_clicked or st.session_state.regenerate_answer_clicked:
     context = get_relevant_context(st.session_state.transcription, user_question)
