@@ -196,7 +196,7 @@ if 'downloaded_video' not in st.session_state:
 if st.button("Submit to download video"):
     video_blob = bucket.get_blob(f"mp3_files/{video_name}.mp4")
 
-    with tempfile.NamedTemporaryFile(=False, suffix=".mp4") as tf:
+with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as tf:
         video_filepath = tf.name
         video_blob.download_to_filename(video_filepath)
         st.session_state.downloaded_video = video_filepath
