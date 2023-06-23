@@ -14,7 +14,6 @@ import streamlit as st
 import bardapi as bard_module
 from nltk.corpus import stopwords
 
-nltk.download("punkt")
 from collections import defaultdict
 import heapq
 from nltk.tokenize import RegexpTokenizer
@@ -31,7 +30,8 @@ from deep_translator import GoogleTranslator
 
 nltk.download('averaged_perceptron_tagger')
 nltk.download('stopwords')
-
+if not nltk.data.find('tokenizers/punkt'):
+    nltk.download("punkt")
 
 def mark_button_action(b_key: str):
     st.session_state[b_key] = not st.session_state[b_key]
