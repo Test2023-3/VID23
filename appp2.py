@@ -291,32 +291,31 @@ if st.session_state.transcription:
     col1, col2 = st.columns([1, 1])
 
     if not st.session_state.get('submit_question_clicked'): st.session_state.submit_question_clicked = False
-    # Call initialize_button_states before using the attributes
-initialize_button_states()
+    # Call initialize_button_states after defining the col1 and col2
+    initialize_button_states()
 
-if col1.button("Submit Question"):
-    mark_button_action('submit_question_clicked')
+    if col1.button("Submit Question"):
+        mark_button_action('submit_question_clicked')
 
-if col2.button("Regenerate Answer"):
-    mark_button_action('regenerate_answer_clicked')
+    if col2.button("Regenerate Answer"):
+        mark_button_action('regenerate_answer_clicked')
 
-if st.session_state.submit_question_clicked or st.session_state.regenerate_answer_clicked:
-    context = get_relevant_context(st.session_state.transcription, user_question)
-    answer = context.split(". ", 1)[1]
-    with get_bard_answer(context[:512]) as bard_answer:
-        st.session_state.bard_answer = bard_answer
-    st.text_area("Answer", value=answer, height=150)
+    if st.session_state.submit_question_clicked or st.session_state.regenerate_answer_clicked:
+        context = get_relevant_context(st.session_state.transcription, user_question)
+        answer = context.split(". ", 1)[1]
+        with get_bard_answer(context[:512]) as bard_answer:
+            st.session_state.bard_answer = bard_answer
+        st.text_area("Answer", value=answer, height=150)
 
-    col3, col4 = st.columns([1, 1])
+        col3, col4 = st.columns([1, 1])
 
-    if not st.session_state.get('translate_answer_arabic_clicked'): st.session_state.translate_answer_arabic_clicked = False
-    if col3.button("Translate Answer to Arabic"):
-        mark_button_action('translate_answer_arabic_clicked')
+        if not st.session_state.get('translate_answer_arabic_clicked'): st.session_state.translate_answer_arabic_clicked = False
+        if col3.button("Translate Answer to Arabic"):
+            mark_button_action('translate_answer_arabic_clicked')
 
-    if st.session_state.translate_answer_arabic_clicked:
-        st.session_state.translation_bard_answer = translate_text(st.session_state.bard_answer)
-        st.markdown(f"<div class='arabic-text'><label>Answer in Arabic</label><br><textarea style='width: 100%; height: 150px;'>{st.session_state.translation_bard_answer}</textarea></div>", unsafe_allow_html=True)
-
+        if st.session_state.translate_answer_arabic_clicked:
+            st.session_state.translation_bard_answer = translate_text(st.session_state.bard_answer)
+            st.markdown(f"<div class='arabic-text'><label>Answer in Arabic</label><br><textarea style='width: 100%; height: 150px;'>{st.session_state.translation_bard_answer}</textarea></div>", unsafe_allow_html=True)
     # Reinforcement Module
     if st.session_state.bard_answer:
         st.subheader("Reinforcement Module")
