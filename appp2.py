@@ -12,6 +12,7 @@ from firebase_admin import credentials, storage
 import whisper
 import streamlit as st
 import bardapi as bard_module
+from nltk.corpus import stopwords
 
 nltk.download("punkt")
 from collections import defaultdict
