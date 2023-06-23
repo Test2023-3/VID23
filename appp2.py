@@ -30,8 +30,12 @@ from deep_translator import GoogleTranslator
 
 nltk.download('averaged_perceptron_tagger')
 nltk.download('stopwords')
-if not nltk.data.find('tokenizers/punkt'):
+# Check if the 'punkt' data is already downloaded
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:  
     nltk.download("punkt")
+
 
 def mark_button_action(b_key: str):
     st.session_state[b_key] = not st.session_state[b_key]
