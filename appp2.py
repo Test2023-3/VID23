@@ -43,13 +43,11 @@ def mark_button_action(b_key: str):
 # Add your Bard token here
 os.environ['_BARD_API_KEY'] = "Wwj86guYc9unyPQDkyNlWsR7IGBlXKAc-Gk7s7RfVb9YrEVptkKXYG7Ykg-OcLCYnxtIVA."
 
-
-if not firebase_admin._apps:
+if not firebase_admin._get_apps():
     cred = credentials.Certificate("firebase.json")
     firebase_app = firebase_admin.initialize_app(cred, {
         "storageBucket": "chatgpt-28e16.appspot.com",
     })
-
 def get_available_mp4s(bucket):
     blobs = bucket.list_blobs(prefix="mp3_files/")
     mp4_files = [os.path.basename(blob.name).replace('.mp4', '') for blob in blobs]
